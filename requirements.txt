@@ -1,0 +1,11 @@
+
+configparser
+colorama
+
+
+# Google models
+google-genai
+google-generativeai
+
+# OpenAI models
+openai
