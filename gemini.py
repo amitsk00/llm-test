@@ -1,7 +1,10 @@
 
 # import configparser
 # import os
-from utils import printInBox , config , Fore , Style
+from utils import printInBox ,  printMetaDataToken , getUserInput
+from utils import color_user, color_llm  ,config , Fore 
+
+
 
 import google.generativeai as genai
 
@@ -30,7 +33,6 @@ generation_config  = {
 
 system_instruction_text = "You are a knowledgeable and friendly assistant. Answer questions clearly and provide explanations when helpful. Be precise and concise. If you don't know the answer, say 'I don't know'."
 
-
 model_gemini = genai.GenerativeModel(
     model_name = gemini_model ,
     generation_config = generation_config ,
@@ -44,6 +46,7 @@ def get_gemini_response(chat_session, user_input):
     try:
         response = chat_session.send_message(user_input)
         # printInBox(response)
+        printMetaDataToken(response.usage_metadata)
         return response.text
     except Exception as e:
         print(f"An error occurred while getting the response: {e}")
@@ -53,7 +56,9 @@ def get_gemini_response(chat_session, user_input):
 
 while True:
     try:
-        user_input = input(Fore.GREEN + "You: \n")
+        user_input = getUserInput()
+        if user_input is None:
+            break 
 
         # Check if the user wants to exit
         if user_input.lower() in ["quit", "exit"]:
@@ -61,7 +66,7 @@ while True:
             break
 
         response_text = get_gemini_response(chat, user_input)
-        print(Fore.BLUE + f"\nGemini: \n{response_text}\n---------\n" + Style.RESET_ALL)
+        print(color_llm + f"\nGemini: \n{response_text}\n---------\n" + Fore.RESET)
 
     except KeyboardInterrupt:
         # Allow exiting with Ctrl+C
@@ -72,5 +77,7 @@ while True:
         print(f"\nAn unexpected error occurred: {e}")
         # Optionally break or continue depending on desired robustness
         # break
+    finally:
+        print(Fore.RESET)        
 
 print("Chat ended.")
