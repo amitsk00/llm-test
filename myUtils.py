@@ -57,6 +57,17 @@ def printMetaDataToken(metadata):
         printInBox( "No metadata available." , "red")
 
 
+def printReqMetaDataToken(metadata):
+    if metadata:
+        # Use getattr for safety in case an attribute is missing, providing 'N/A' as default
+        prompt_tokens = getattr(metadata, 'prompt_tokens', 'N/A')
+        completion_tokens = getattr(metadata, 'completion_tokens', 'N/A')  
+        total_tokens = getattr(metadata, 'total_tokens', 'N/A')
+
+        printInBox( f"Prompt Tokens: {prompt_tokens} and Total Tokens: {total_tokens}" , "yellow")
+    else:
+        printInBox( "No metadata available." , "red")
+
 
 def getUserInput():
        
