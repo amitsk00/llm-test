@@ -1,33 +1,35 @@
-# llm-test  
+# BQ helper
 
-test with py and api for multiple models
-like openAI, Gemma and Gemini
+## Install help
 
-## Getting config.ini file
+### Python
 
-* ./config has a file names `config_template.ini` in it
-* rename or clone with name as `config.ini`
-* add prope api keys before running the program
+* Install Python, set path and pip and venv
+* Run below commands
 
-## Starting with code  
+    ```sh
+        # assuming Linux OS
+        
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+    ```
 
-* ensure that API key is valid and proper
-* create a virtual environemnt  
+* all set to go
 
-```sh
-    python3 -m venv venv
-    source venv/bin/activate
-```
+### Node
 
-* run the required program  
+* set the npm/node environment
 
----
+    ```sh
+        # assuming Linux OS
 
-## app.py
+        sudo apt install npm
+        nvm install --lts
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 
-* generic code to run for LLMs
+        npm install
+        npm start
+    ```
 
-## gemini.py
-
-* code to run Gemini model for chat
-
+* all set now

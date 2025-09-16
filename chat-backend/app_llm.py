@@ -1,7 +1,10 @@
 import configparser
 import os
+
 import requests
 import json 
+
+import pydantic
 
 from myUtils import printInBox ,  printMetaDataToken , getUserInput , printReqMetaDataToken
 from myUtils import color_user, color_llm  ,config , Fore 
@@ -10,6 +13,9 @@ from myUtils import BASE_DIR, CONFIG_DIR, CONFIG_FILE
 
 from openai import OpenAI
 import openai
+
+
+
 
 
 config = configparser.ConfigParser()
@@ -67,23 +73,44 @@ def checkKey():
             print(e)
 
 
+def processResponse(data):
+    pass 
+    list_results = []
+
+    print(data["usage"])
+
+    i_tokens = data["usage"]["total_tokens"]
+    f_cost = data["usage"]["cost"]["total_cost"]
+    
+    for x in data["search_results"]:
+        # print(x)
+        list_results.append(x["snippet"])
+
+    print(f"total tokens : {i_tokens}")
+    print(f"total cost - {f_cost}")
+
+    return list_results
+
+
 
 def callOpenAi():
     if boolFlow:
-        print("\n\nCalling OpenAI func")
+        pass
+        print("\n\nCalling Requests method")
 
     headers = {"Authorization": f"Bearer {myKey}"}
     url = f"{myBaseUrl}/chat/completions"
 
-    currMessage = "How to ensure cost efficient check of string fields which can have mixed case values"
+    currMessage = "How to use partitions in BigQuery"
+    currContext = """
+        You are a coding assistant who helps write efficient queries in BigQuery. 
+        You answer in bullet points, unless asked for details
+        """
     startMessage = [
-        {"role": "system", "content": "You are a coding assistant who helps write efficient queries in BigQuery and SQL"},
+        {"role": "system", "content": currContext},
         {"role": "user", "content": currMessage}
     ]
-    # startMessage = {
-    #     "role": "system", "content": "You are a coding assistant who helps write efficient queries in BigQuery and SQL",
-    #     "role": "user", "content": currMessage
-    # }
+
 
     try: 
         payload = {
@@ -100,13 +127,14 @@ def callOpenAi():
         printInBox(f"Error: {response.status_code} - {response.text}", "red")
         return "error"
 
-    currJsonObj = response.json()
-    currJsonObj = currJsonObj.replace("'", '"')
-    data = json.loads(currJsonObj)
-    llmAnswer = data.choices[0].message.content
-    
-    printReqMetaDataToken(data.usage)
-    print(llmAnswer)
+    data = response.json() 
+    if data:
+        llmAnswer = processResponse(data)
+        # printReqMetaDataToken(data.usage)
+        for line in llmAnswer:
+            print(line)
+    else:
+        print("EMPTY RESPONSE")
 
 
 
@@ -115,7 +143,7 @@ def callChatCompletions(message):
         print("\n\nCalling chat-completions func")
 
     startMessage = [
-        {"role": "system", "content": "You are a helpful AI assistant."},
+        {"role": "system", "content": "You are a helpful AI assistant who is exprt in GCP BQ. Answer for 50 tokens only"},
         {"role": "user", "content": message}
     ]
 
@@ -138,33 +166,10 @@ def callChatCompletions(message):
      
 
     # answer =  response["choices"][0]["message"]["content"]
-    answer =  response.choices[0].message.content
+    llmAnswer =  response.choices[0].message.content
+    curr_tokens , curr_cost = printReqMetaDataToken(response.usage)
 
-    return answer
-
-
-
-
-
-if __name__ == "__main__":
-    print("Start")
-    answer = ""
-    message = "give me 5 lines about England and India test series"
-
-    ######################
-    # OpenAI based
-
-    checkKey()
-
-    answer = callOpenAi()
-
-    # print("\n===========================\n")
-    # answer = callChatCompletions(message)
-    # printInBox(answer)
+    return llmAnswer , curr_tokens , curr_cost 
 
 
 
-
-
-    print("End")
-    ############################

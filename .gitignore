@@ -176,3 +176,11 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+
+
+
+##########################
+# NPM related
+
+node_modules 

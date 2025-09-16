@@ -9,7 +9,7 @@ import select
 DASHES = "-" * 20
 # Get the base directory of the current Python file
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-CONFIG_DIR = os.path.join(BASE_DIR, "config")
+CONFIG_DIR = os.path.join(BASE_DIR, "..", "config")
 CONFIG_FILE = os.path.join(CONFIG_DIR, "config.ini")
 
 config = configparser.ConfigParser()
@@ -51,8 +51,9 @@ def printMetaDataToken(metadata):
         prompt_tokens = getattr(metadata, 'prompt_token_count', 'N/A')
         candidate_tokens = getattr(metadata, 'candidates_token_count', 'N/A')  
         total_tokens = getattr(metadata, 'total_token_count', 'N/A')
+        total_cost = getattr(metadata, 'cost', '9999')
 
-        printInBox( f"Prompt Tokens: {prompt_tokens} and Total Tokens: {total_tokens}" , "yellow")
+        printInBox( f"Prompt Tokens: {prompt_tokens} and Total Tokens: {total_tokens}  and cost : {total_cost}", "yellow")
     else:
         printInBox( "No metadata available." , "red")
 
@@ -63,10 +64,14 @@ def printReqMetaDataToken(metadata):
         prompt_tokens = getattr(metadata, 'prompt_tokens', 'N/A')
         completion_tokens = getattr(metadata, 'completion_tokens', 'N/A')  
         total_tokens = getattr(metadata, 'total_tokens', 'N/A')
+        total_cost_dict = getattr(metadata, 'cost', ' ')
+        total_cost = total_cost_dict["total_cost"]
 
-        printInBox( f"Prompt Tokens: {prompt_tokens} and Total Tokens: {total_tokens}" , "yellow")
+        printInBox( f"Prompt Tokens: {prompt_tokens} and Total Tokens: {total_tokens} and cost : {total_cost}" , "yellow")
+        return total_tokens , total_cost
     else:
         printInBox( "No metadata available." , "red")
+        return 0 , 0 
 
 
 def getUserInput():
