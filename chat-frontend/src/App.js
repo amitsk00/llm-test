@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
+import './App.css';
 
 function App() {
   const [data, setData] = useState(null);
@@ -40,29 +41,31 @@ function App() {
           value={message}
           onChange={e => setMessage(e.target.value)}
           placeholder="Type your query ..."
-          style={{ padding: "8px", width: "60%" }}
+          className="query-input"
         />
-        <button onClick={sendMessage} disabled={loading || !message.trim()} style={{ marginLeft: "8px", padding: "8px" }}>
+        <button onClick={sendMessage} disabled={loading || !message.trim()} className="send-button">
           {loading ? "Sending..." : "Send"}
         </button>
       </div>
+
+      <div className="info-display">
+        <span className="info-label">Tokens used: </span>
+        <span className="info-value tokens-value">{currTokens}</span>
+        <span className="info-label">    </span>
+        <span className="info-label">Cost: </span>
+        <span className="info-value cost-value">{currCost}</span>
+        <span className="info-label" padding-right = "10px">      </span>
+        <span className="info-label">   --- </span>
+      </div>
+
       {data && (
-        <div style={{
-          background: "#e0e0e0",
-          padding: "10px 16px",
-          borderRadius: "16px",
-          maxWidth: "60%",
-          margin: "12px 0" ,
-          marginLeft: "auto",      
-          display: "block"   
-        }}>
-            <div style={{ color: 'red', fontWeight: 'bold' }}>Tokens used: {currTokens}</div>
-            <div style={{ color: 'red', fontWeight: 'bold' }}>Cost: {currCost}</div>          
+        <div className="response-container">
             <div><ReactMarkdown>{data}</ReactMarkdown></div>
 
            {/* {JSON.stringify(data)} */}
         </div>
       )}
+      <hr />
     </div>
   );
 }

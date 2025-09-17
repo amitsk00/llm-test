@@ -142,8 +142,10 @@ def callChatCompletions(message):
     if boolFlow:
         print("\n\nCalling chat-completions func")
 
+    curr_context = "You are a helpful AI assistant who is exprt in GCP BQ. Answer for 50 tokens only"
+    curr_context = "You are a helpful AI assistant who is exprt in GCP BQ."
     startMessage = [
-        {"role": "system", "content": "You are a helpful AI assistant who is exprt in GCP BQ. Answer for 50 tokens only"},
+        {"role": "system", "content": curr_context},
         {"role": "user", "content": message}
     ]
 
