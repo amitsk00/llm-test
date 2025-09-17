@@ -5,7 +5,9 @@ from datetime import datetime
 import requests
 import json 
 
-import pydantic
+# import pydantic
+from pydantic import BaseModel
+import uuid
 
 from myUtils import printInBox ,  printMetaDataToken , getUserInput , printReqMetaDataToken
 from myUtils import color_user, color_llm  ,config , Fore 
@@ -30,6 +32,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+#############################
+# dict to store message history
+session_store = {}
+
+class ChatMessage(BaseModel):
+    session_id: str | None = None
+    message: str
 
 
 config = configparser.ConfigParser()
@@ -60,14 +69,32 @@ def read_root():
 
 
 
-@app.get("/chat/{message}")
-def chat_to_llm(message: str):
+# @app.get("/chat/{message}")
+@app.post("/chat")
+def chat_to_llm(chat_message: ChatMessage):
+    curr_session = chat_message.session_id
+
+    if not curr_session or curr_session not in session_store:
+        # New session: create a unique ID and initialize history        
+        curr_session = str(uuid.uuid4())
+        print(f"new session to be created with f{curr_session}")
+        session_store[curr_session] = []
+
+    session_store[curr_session].append({"role": "user", "content": chat_message.message})
+    conversation_history = session_store[curr_session]
+
+
     ret_answer = {}
     print(f"\n\nLLM being called at {datetime.now()}")
-    answer , curr_tokens , curr_cost  = callChatCompletions(message)
+    answer , curr_tokens , curr_cost  = callChatCompletions(conversation_history)
+
+    llm_response = {"role": "assistant", "content": answer}
+    session_store[curr_session].append(llm_response)
+
     ret_answer["answer"] = answer
     ret_answer["tokens"] = curr_tokens
     ret_answer["cost"] = curr_cost
+    ret_answer["session_id"] = curr_session
 
     return ret_answer
 
@@ -95,8 +122,9 @@ if __name__ == "__main__":
 
 
     # message = "give me 5 lines about Ganesh festival in Pune"
-    # # answer = callChatCompletions(message)
-    # answer = chat_to_llm(message)
+    # chat_message_obj = ChatMessage(message=message)
+    # # answer = chat_to_llm(chat_message_obj)
+    # answer , curr_tokens, curr_cost = callChatCompletions(message)
     # printInBox(answer)
     # print("\n===========================\n")
 

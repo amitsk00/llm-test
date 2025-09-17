@@ -1,73 +1,120 @@
+/* Add or modify these in App.css */
+
 .app-container {
-  padding: 20px;
-  max-width: 960px;
-  margin: 0 auto;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
 }
 
-.input-container {
-  margin-bottom: 16px;
+.chat-window {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 10px;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.message-container {
+  display: flex;
+}
+
+.message-container.user {
+  justify-content: flex-end;
+}
+
+.message-container.ai {
+  justify-content: flex-start;
+}
+
+.message {
+  max-width: 80%;
+  padding: 10px 16px;
+  border-radius: 18px;
+  word-wrap: break-word;
+}
+
+.message p {
+  margin: 0;
+}
+
+.message-container.user .message {
+  background-color: #007bff;
+  color: white;
+}
+
+.message-container.ai .message {
+  background-color: #e9e9eb;
+  color: black;
+}
+
+.input-area {
+  display: flex;
 }
 
 .query-input {
-  padding: 8px;
-  width: 60%;
-  border-radius: 4px;
+  flex-grow: 1; /* Allows the input to grow and fill available space */
   border: 1px solid #ccc;
+  border-radius: 20px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  margin-right: 10px; /* Adds some space between the input and the button */
 }
 
 .send-button {
-  margin-left: 8px;
-  padding: 9px 12px;
-  border-radius: 4px;
+  padding: 10px 20px;
+  border-radius: 20px;
   border: none;
   background-color: #007bff;
   color: white;
   cursor: pointer;
 }
 
-.send-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
 .info-display {
-  border-radius: 16px;
-  margin-left: auto;
-  display: block;
-  max-width: 60%;
-  text-align: right;
-  margin-bottom: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #555;
 }
 
 .info-label {
-  /* The default color is black, which is what we want. */
-  color: black;
-}
-
-.info-value {
   font-weight: bold;
-  margin-left: 6px;
+  margin: 0 8px 0 16px;
 }
 
-.tokens-value {
-  color: green;
-  margin: 12px 0;
+/* Typing indicator animation */
+.message.typing span {
+  height: 8px;
+  width: 8px;
+  background-color: #999;
+  border-radius: 50%;
+  display: inline-block;
+  animation: wave 1.3s infinite;
+  margin: 0 2px;
 }
 
-.cost-value {
-  color: red;
-  margin: 12px 0;
+.message.typing span:nth-of-type(2) {
+  animation-delay: -1.1s;
 }
 
-.response-container {
-  background: #e0e0e0;
-  padding: 10px 16px;
-  border-radius: 16px;
-  max-width: 60%;
-  margin: 12px 0;
-  margin-left: auto;
-  display: block;
+.message.typing span:nth-of-type(3) {
+  animation-delay: -0.9s;
+}
+
+@keyframes wave {
+  0%, 60%, 100% {
+    transform: initial;
+  }
+  30% {
+    transform: translateY(-8px);
+  }
 }

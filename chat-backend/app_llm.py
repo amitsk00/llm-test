@@ -144,10 +144,20 @@ def callChatCompletions(message):
 
     curr_context = "You are a helpful AI assistant who is exprt in GCP BQ. Answer for 50 tokens only"
     curr_context = "You are a helpful AI assistant who is exprt in GCP BQ."
-    startMessage = [
-        {"role": "system", "content": curr_context},
-        {"role": "user", "content": message}
-    ]
+    startMessage = [ {"role": "system", "content": curr_context} ]
+
+    if isinstance(message , str):
+        user_message = [ {"role": "user", "content": message} ]
+        startMessage.extend(user_message)
+    elif isinstance(message , list):
+        startMessage.extend(message)
+    else:
+         # Handle unexpected type
+        error_msg = f"Unexpected message type: {type(message)}"
+        printInBox(error_msg, "red")
+        return f"Error: {error_msg}", 0, 0.0
+
+
 
     try:
         response = clientLlm.chat.completions.create(
@@ -157,7 +167,7 @@ def callChatCompletions(message):
         )
     except Exception as e:
         print(f"An error occurred in callChatCompletions: {e}")
-        return "error"
+        return "error by LLM" , 'NA' , 'NA'
 
     # print(response)
     # if response.errors:
